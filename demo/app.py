@@ -4,9 +4,11 @@ from flask import (
     request,
 )
 
+from demo.api.clients.base import DumbCache
 from demo.api.manager import ApiManager
 
 app = Flask(__name__)
+api_cache = DumbCache()
 
 
 @app.route('/')
@@ -23,7 +25,7 @@ def search():
 @app.route('/results', methods=['POST'])
 def get_results():
     keyword = request.form.get('keyword')
-    api = ApiManager()
+    api = ApiManager(api_cache)
     results = api.search(keyword)
     return render_template('results_content.html', results=results)
 

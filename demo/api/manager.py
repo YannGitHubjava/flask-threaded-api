@@ -1,6 +1,8 @@
 import logging
 from threading import Thread
 
+import sys
+
 from demo.api.clients import (
     BananaClient,
     MagicClient,
@@ -22,17 +24,18 @@ class ApiWorker(Thread):
 
 
 class ApiManager:
-    def __init__(self):
+    def __init__(self, cache):
         self.logger = logging.getLogger(__name__)
         self.clients = [
-            BananaClient(),
-            MagicClient(),
-            RoombaClient()
+            BananaClient(cache),
+            MagicClient(cache),
+            RoombaClient(cache)
         ]
 
     def search(self, keyword):
         # Get the worker threads ready
-        workers = [ApiWorker(client, keyword) for client in self.clients]
+        workers = [ApiWorker(client, keyword)
+                   for client in self.clients]
 
         # Put all the workers to work.
         results = list()
@@ -52,6 +55,18 @@ class ApiManager:
 
 
 if __name__ == '__main__':
+    root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
+
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    root.addHandler(ch)
+
     manager = ApiManager()
+    r = manager.search('bats')
+    print(r)
     r = manager.search('bats')
     print(r)

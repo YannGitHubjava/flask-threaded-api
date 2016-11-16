@@ -1,10 +1,14 @@
 from time import sleep
 from random import randint
 
-from .base import ApiClient
+from .base import ApiClient, cached
 
 
 class MagicClient(ApiClient):
+    def __init__(self, cache):
+        super().__init__('magic', cache)
+
+    @cached
     def search(self, keyword):
         self.logger.warning('Magic client started search for: ' + keyword)
         # Pretend to wait for the request

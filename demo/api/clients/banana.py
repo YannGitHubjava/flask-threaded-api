@@ -1,10 +1,14 @@
 from random import randint
 from time import sleep
 
-from .base import ApiClient
+from .base import ApiClient, cached
 
 
 class BananaClient(ApiClient):
+    def __init__(self, cache):
+        super().__init__('banana', cache)
+
+    @cached
     def search(self, keyword):
         self.logger.warning('Banana client started search for: ' + keyword)
         # Pretend to wait for the request
