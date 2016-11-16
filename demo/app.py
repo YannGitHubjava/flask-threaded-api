@@ -17,10 +17,16 @@ def index():
 @app.route('/search', methods=['POST'])
 def search():
     keyword = request.form.get('keyword')
+    return render_template('results.html', keyword=keyword)
+
+
+@app.route('/results', methods=['POST'])
+def get_results():
+    keyword = request.form.get('keyword')
     api = ApiManager()
     results = api.search(keyword)
+    return render_template('results_content.html', results=results)
 
-    return render_template('results.html', results=results)
 
 if __name__ == '__main__':
     app.run(debug=True)
